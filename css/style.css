@@ -180,10 +180,13 @@ a:focus-visible {
   padding: 19px 16px;
 }
 
+/* content-box so the 1472:1080 ratio applies inside the border and the
+   original videos fill it exactly (656px wide including the border) */
 .hero-video {
+  box-sizing: content-box;
   display: block;
-  width: 656px;
-  max-width: 100%;
+  width: 640px;
+  max-width: calc(100% - 16px);
   height: auto;
   aspect-ratio: 1472 / 1080;
   border: 8px solid var(--navy);
@@ -324,6 +327,7 @@ a:focus-visible {
   }
 
   .hero-video {
+    max-width: calc(100% - 10px);
     border-width: 5px;
   }
 
