@@ -31,7 +31,7 @@ python3 dev-server.py
 
 Serves http://localhost:8000. Gotchas:
 
-- **Don't use `python3 -m http.server`.** It ignores Range requests, and Safari won't play `<video>` without them, so the player stays black.
+- **Don't use `python3 -m http.server`.** It ignores Range requests, and Safari won't play `<video>` without them, so the player stays black. It also doesn't send the CSP and other headers from `vercel.json`, which `dev-server.py` does.
 - **Start the server in a Terminal-panel tab, not with `preview_start`.** macOS privacy blocks the app's preview runner from reading `~/Desktop`. `.claude/launch.json` only attaches the preview to the already-running server on port 8000.
 - **Editing `index.html` makes the app open a `file://` preview tab.** That tab shows the page unstyled with a black video. Close it and use the `localhost:8000` tab.
 
@@ -96,7 +96,7 @@ Project `eweximsjuwzvtrynscdg` (East US) holds the video list, uploaded files an
 
 ## Deploy
 
-Vercel serves the repo root as a static site (Framework Preset: Other, no build command). `vercel.json` only redirects `/admin` → `/admin/`, because Vercel returns 404 for the slashless directory URL. Asset paths must stay relative and match the filenames' case exactly, because Vercel's filesystem is case-sensitive and macOS isn't.
+Vercel serves the repo root as a static site (Framework Preset: Other, no build command). `vercel.json` does two things. It redirects `/admin` → `/admin/`, because Vercel returns 404 for the slashless directory URL. It also sends security headers on every path: a Content-Security-Policy that allows scripts only from self and cdn.jsdelivr.net, network, image and media only from self and the Supabase project (plus `blob:` for the upload previews), no inline styles or scripts, and `frame-ancestors 'none'`. It also sends X-Frame-Options DENY, nosniff, a Referrer-Policy and a Permissions-Policy. `dev-server.py` reads the same headers from `vercel.json`, so CSP problems show up locally. **If you add a new external host, inline style or inline script, update the CSP or it will be blocked.** Asset paths must stay relative and match the filenames' case exactly, because Vercel's filesystem is case-sensitive and macOS isn't.
 
 ## Working agreements
 

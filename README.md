@@ -28,7 +28,7 @@ Use `dev-server.py` rather than `python3 -m http.server`: the built-in server ig
 
 Hosted on Vercel as a static site, deployed from the GitHub repo
 [howardbeaver/claude-demo-fall2026](https://github.com/howardbeaver/claude-demo-fall2026).
-There is no build step. `vercel.json` only redirects `/admin` to `/admin/` (Vercel 404s the slashless form).
+There is no build step. `vercel.json` redirects `/admin` to `/admin/` (Vercel 404s the slashless form) and sets the security headers (Content-Security-Policy and friends); `dev-server.py` sends the same headers locally.
 
 First-time setup:
 

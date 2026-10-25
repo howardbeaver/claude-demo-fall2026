@@ -3,11 +3,13 @@
 Python's built-in `python3 -m http.server` always sends whole files, and
 Safari refuses to play <video> unless the server answers byte-range
 requests with 206 Partial Content. This adds that, plus no-cache headers
-so edits show up on refresh.
+so edits show up on refresh, and the same security headers Vercel sends
+(read from vercel.json) so the Content-Security-Policy is tested locally.
 
 Usage: python3 dev-server.py [port]     (default port 8000)
 """
 
+import json
 import os
 import re
 import sys
@@ -19,10 +21,27 @@ RANGE_RE = re.compile(r"bytes=(\d*)-(\d*)$")
 CHUNK_SIZE = 64 * 1024
 
 
+def site_headers():
+    """Headers vercel.json applies to every path, re-read so edits apply at once."""
+    try:
+        with open(os.path.join(ROOT, "vercel.json")) as f:
+            config = json.load(f)
+    except (OSError, ValueError):
+        return []
+    return [
+        (header["key"], header["value"])
+        for rule in config.get("headers", [])
+        if rule.get("source") == "/(.*)"
+        for header in rule.get("headers", [])
+    ]
+
+
 class RangeRequestHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Accept-Ranges", "bytes")
         self.send_header("Cache-Control", "no-cache")
+        for key, value in site_headers():
+            self.send_header(key, value)
         super().end_headers()
 
     def send_head(self):
