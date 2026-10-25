@@ -1,0 +1,239 @@
+/* MyVideoPlayer admin: builds on css/style.css (tokens, background, header) */
+
+/* Header: logo plus plain links; no hamburger, so the links stay visible on phones */
+.admin-header {
+  padding: 0 clamp(16px, 3.8vw, 46px);
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.admin-actions a,
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-actions a:hover,
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.link-button:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 4px;
+}
+
+/* Panels */
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px;
+}
+
+.admin-panel {
+  width: 100%;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.admin-panel h1 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--navy);
+}
+
+.admin-status {
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--glass);
+  font-size: 15px;
+}
+
+.admin-status:empty {
+  display: none;
+}
+
+/* Sign-in form */
+
+.sign-in-panel {
+  max-width: 400px;
+}
+
+#sign-in-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+#sign-in-form label {
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+#sign-in-form input {
+  margin-bottom: 18px;
+  padding: 10px 12px;
+  border: 1px solid #8a93b8;
+  border-radius: 2px;
+  font: inherit;
+  font-size: 16px;            /* 16px stops iOS Safari zooming into the field */
+  color: var(--ink);
+  background: #fff;
+}
+
+#sign-in-form input:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 0;
+  border-color: var(--navy);
+}
+
+.form-error {
+  margin: -6px 0 16px;
+  padding: 10px 12px;
+  border-left: 4px solid #b3261e;
+  background: #fbeceb;
+  color: #8c1d18;
+  font-size: 14px;
+}
+
+.primary-button {
+  padding: 11px 18px;
+  border: 0;
+  background: var(--navy);
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: var(--navy-strip);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.primary-button:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 2px;
+}
+
+/* Dashboard */
+
+.dashboard {
+  max-width: 760px;
+}
+
+.dashboard-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.signed-in-as {
+  margin: 0;
+  font-size: 14px;
+}
+
+.video-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.video-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(19, 28, 85, 0.15);
+}
+
+.video-row:first-child {
+  border-top: 0;
+}
+
+.video-position {
+  flex: none;
+  width: 2ch;
+  font-weight: bold;
+  text-align: right;
+  color: var(--navy);
+}
+
+.video-row img {
+  flex: none;
+  width: 96px;
+  height: 70px;
+  background: #fff;
+  border: 2px solid var(--navy-strip);
+}
+
+.video-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.video-text h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.video-text p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #3d4766;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.badge-published {
+  background: #dff3e4;
+  color: #1d5c2e;
+}
+
+.badge-hidden {
+  background: #ececec;
+  color: #4a4a4a;
+}
+
+@media (max-width: 600px) {
+  .admin-panel {
+    padding: 18px 16px;
+  }
+
+  .video-row img {
+    width: 72px;
+    height: 53px;
+  }
+}

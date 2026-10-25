@@ -8,3 +8,9 @@ export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_iJ3oKgG0nGswydQRgyelpg_y
 
 // Storage bucket holding videos/, thumbs/ and posters/
 export const MEDIA_BUCKET = 'media';
+
+// Public URL for a file path stored in the videos table, e.g. "videos/a.mp4"
+export function mediaUrl(path) {
+  const encoded = path.split('/').map(encodeURIComponent).join('/');
+  return `${SUPABASE_URL}/storage/v1/object/public/${MEDIA_BUCKET}/${encoded}`;
+}

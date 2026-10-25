@@ -1,7 +1,7 @@
 // MyVideoPlayer: loads the video list from Supabase, builds the gallery,
 // and plays the clicked thumbnail's video in the hero player
 
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, MEDIA_BUCKET } from './supabase-config.js';
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, mediaUrl } from './supabase-config.js';
 
 const hero = document.getElementById('hero-video');
 const gallery = document.querySelector('.gallery');
@@ -21,11 +21,6 @@ const BUNDLED_VIDEOS = [1, 2, 3].map((n) => ({
 }));
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-function mediaUrl(path) {
-  const encoded = path.split('/').map(encodeURIComponent).join('/');
-  return `${SUPABASE_URL}/storage/v1/object/public/${MEDIA_BUCKET}/${encoded}`;
-}
 
 // Published videos in gallery order. Throws if Supabase is unreachable.
 async function fetchVideos() {

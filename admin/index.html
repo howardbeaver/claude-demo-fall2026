@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin · MyVideoPlayer</title>
+  <!-- Root-absolute paths: this page is served at both /admin and /admin/ -->
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <header class="site-header admin-header">
+    <a class="logo" href="/">MyVideoPlayer</a>
+    <div class="admin-actions">
+      <a href="/">View site</a>
+      <button class="link-button" id="sign-out" type="button" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <p class="admin-status" id="checking">Checking sign-in…</p>
+
+    <!-- Signed out -->
+    <section class="admin-panel sign-in-panel" id="sign-in" aria-labelledby="sign-in-heading" hidden>
+      <h1 id="sign-in-heading">Admin sign in</h1>
+
+      <form id="sign-in-form" novalidate>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+        <p class="form-error" id="sign-in-error" role="alert" hidden></p>
+
+        <button class="primary-button" id="sign-in-button" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <!-- Signed in as admin -->
+    <section class="admin-panel dashboard" id="dashboard" aria-labelledby="dashboard-heading" hidden>
+      <div class="dashboard-heading">
+        <h1 id="dashboard-heading">Videos</h1>
+        <p class="signed-in-as">Signed in as <strong id="admin-email"></strong></p>
+      </div>
+
+      <p class="admin-status" id="videos-status" role="status"></p>
+      <ol class="video-list" id="video-list"></ol>
+    </section>
+  </main>
+
+  <script type="module" src="/admin/admin.js"></script>
+</body>
+</html>

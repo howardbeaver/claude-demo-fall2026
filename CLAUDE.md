@@ -11,7 +11,8 @@ Single-page video portfolio: a hero `<video>`, a title/description panel, and a 
 index.html       page shell (header, hero, info panel, empty gallery, footer)
 css/style.css    all styles; design tokens on :root
 js/main.js       loads videos from Supabase, builds the gallery, hero switching, phone menu
-js/supabase-config.js  Supabase project URL + publishable key (public by design)
+js/supabase-config.js  Supabase project URL + publishable key (public by design), mediaUrl()
+admin/           /admin page: index.html, admin.css, admin.js (sign-in + video list)
 supabase/setup.sql     tables, RLS policies, storage bucket, seed rows (run in the SQL Editor)
 dev-server.py    local server with HTTP Range support (dev only)
 images/          background.jpg, favicon.svg
@@ -70,6 +71,15 @@ Project `eweximsjuwzvtrynscdg` (East US) holds the video list, uploaded files an
 - `supabase/setup.sql` is idempotent. Re-run it in the SQL Editor after changing it, and keep it as the source of truth for the schema.
 - Use only the publishable key in code. Never ask for, or commit, the secret / `service_role` key or the database password. Claude doesn't create accounts or enter passwords. The user does those in the dashboard.
 - Plan: M8 public page reads from the DB · M9 `/admin` sign-in · M10 uploads · M11 reorder/edit/delete · M12 security review + deploy.
+
+## Admin page (admin/)
+
+- Served at `/admin` and `/admin/`, so `admin/index.html` uses root-absolute paths (`/css/style.css`, `/admin/admin.js`). Module imports inside `admin.js` stay relative.
+- Uses supabase-js **2.117.3**, pinned and loaded as ESM from jsDelivr (no npm). The public page doesn't load it.
+- **Flow:** remembered session (localStorage) or `signInWithPassword` → `rpc('is_admin')` → dashboard. A non-admin is signed straight out. There's no sign-up or password-reset link.
+- If the user loses the password, delete the user in Authentication → Users, add a new one, and re-run `supabase/setup.sql`. The admins row cascades on delete, and the script re-adds the only user.
+- The page carries `noindex`, and the public site doesn't link to it. Neither is a security measure; RLS is.
+- **Testing:** Claude can't type the user's password, so the user signs in for signed-in tests. Signing out clears the session, and they'll need to sign in again.
 
 ## Deploy
 
