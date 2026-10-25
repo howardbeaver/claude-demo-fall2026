@@ -91,6 +91,69 @@ a:focus-visible {
   text-decoration: underline;
 }
 
+/* Hamburger button: only shown at phone width */
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.menu-toggle:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+/* Three bars drawn from one span and its pseudo-elements */
+.menu-icon,
+.menu-icon::before,
+.menu-icon::after {
+  display: block;
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--navy);
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.menu-icon {
+  position: relative;
+}
+
+.menu-icon::before,
+.menu-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.menu-icon::before {
+  top: -8px;
+}
+
+.menu-icon::after {
+  top: 8px;
+}
+
+/* Open state turns the bars into an X */
+.menu-toggle[aria-expanded="true"] .menu-icon {
+  background-color: transparent;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-icon::before {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-icon::after {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
 /* Hero + gallery */
 
 .player {
@@ -180,25 +243,45 @@ a:focus-visible {
   margin: 0;
 }
 
-/* Phones: stack the logo above the nav */
+/* Phones: hamburger menu and a vertical thumbnail column */
 @media (max-width: 600px) {
   .site-header {
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-    padding: 12px 16px;
+    position: relative;
+    padding: 0 16px;
   }
 
   .logo {
     font-size: 24px;
   }
 
+  .menu-toggle {
+    display: flex;
+  }
+
   .site-nav {
-    gap: 24px;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .site-nav.is-open {
+    display: flex;
   }
 
   .site-nav a {
-    font-size: 16px;
+    padding: 14px 16px;
+    border-top: 1px solid rgba(19, 28, 85, 0.12);
+  }
+
+  .site-nav a:focus-visible {
+    outline-offset: -4px;
   }
 
   .player {
@@ -208,10 +291,29 @@ a:focus-visible {
   .hero-video {
     border-width: 5px;
   }
+
+  .gallery {
+    flex-direction: column;
+    gap: 12px;
+    width: auto;
+    padding: 12px;
+  }
+
+  .gallery li {
+    flex: none;
+  }
+
+  /* Native size keeps the 143x105 thumbnails sharp */
+  .thumb img {
+    width: 143px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .thumb img {
+  .thumb img,
+  .menu-icon,
+  .menu-icon::before,
+  .menu-icon::after {
     transition: none;
   }
 }

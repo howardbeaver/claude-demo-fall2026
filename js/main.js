@@ -47,3 +47,32 @@ thumbs.forEach((thumb) => {
 });
 
 setActive(thumbs[0], false);
+
+// Phone-width hamburger menu
+
+const menuToggle = document.querySelector('.menu-toggle');
+const siteNav = document.getElementById('site-nav');
+
+function setMenuOpen(open) {
+  menuToggle.setAttribute('aria-expanded', String(open));
+  siteNav.classList.toggle('is-open', open);
+}
+
+menuToggle.addEventListener('click', () => {
+  setMenuOpen(menuToggle.getAttribute('aria-expanded') !== 'true');
+});
+
+// Close after choosing a link
+siteNav.addEventListener('click', (event) => {
+  if (event.target.closest('a')) {
+    setMenuOpen(false);
+  }
+});
+
+// Escape closes the menu and returns focus to the button
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && siteNav.classList.contains('is-open')) {
+    setMenuOpen(false);
+    menuToggle.focus();
+  }
+});
