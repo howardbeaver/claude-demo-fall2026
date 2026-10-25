@@ -25,38 +25,28 @@
   <main class="player">
     <h1 class="visually-hidden">Video portfolio</h1>
 
+    <!-- src, poster and the gallery are filled in by js/main.js from Supabase -->
     <video class="hero-video" id="hero-video"
            aria-label="Video player"
-           src="video/sue-vid1.mp4"
-           poster="posters/sue-vid1-frame.jpg"
            width="1472" height="1080"
-           controls autoplay muted playsinline preload="auto"></video>
+           controls muted playsinline preload="auto"></video>
+
+    <section class="video-info" aria-label="About this video">
+      <h2 class="video-title" id="video-title"></h2>
+      <p class="video-description" id="video-description" hidden></p>
+    </section>
 
     <p class="visually-hidden" id="now-playing" aria-live="polite"></p>
 
-    <ul class="gallery" aria-label="Choose a video">
-      <li>
-        <button class="thumb" type="button" data-video="video/sue-vid1.mp4" data-poster="posters/sue-vid1-frame.jpg" data-title="Video 1" aria-label="Play video 1">
-          <img src="posters/sue-vid1-thumb.png" alt="" width="143" height="105">
-        </button>
-      </li>
-      <li>
-        <button class="thumb" type="button" data-video="video/sue-vid2.mp4" data-poster="posters/sue-vid2-frame.jpg" data-title="Video 2" aria-label="Play video 2">
-          <img src="posters/sue-vid2-thumb.png" alt="" width="143" height="105">
-        </button>
-      </li>
-      <li>
-        <button class="thumb" type="button" data-video="video/sue-vid3.mp4" data-poster="posters/sue-vid3-frame.jpg" data-title="Video 3" aria-label="Play video 3">
-          <img src="posters/sue-vid3-thumb.png" alt="" width="143" height="105">
-        </button>
-      </li>
-    </ul>
+    <ul class="gallery" aria-label="Choose a video"></ul>
+
+    <noscript><p class="video-info">Turn on JavaScript to watch the videos.</p></noscript>
   </main>
 
   <footer class="site-footer">
     <p>My Contact Information &ndash; My Social Media Links</p>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

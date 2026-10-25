@@ -1,6 +1,6 @@
 # MyVideoPlayer
 
-Single-page video portfolio: a hero `<video>` with a strip of three thumbnails below it. Clicking a thumbnail plays that video in the hero. Plain HTML, CSS and JavaScript, with no build step, framework or dependencies.
+Single-page video portfolio: a hero `<video>`, a title/description panel, and a strip of thumbnails below it. Clicking a thumbnail plays that video in the hero. The video list comes from Supabase. Plain HTML, CSS and JavaScript (ES modules), with no build step, framework or npm dependencies.
 
 - Live: https://claude-demo-fall2026.vercel.app
 - Repo: https://github.com/howardbeaver/claude-demo-fall2026 (public; every push to `main` redeploys on Vercel)
@@ -8,15 +8,14 @@ Single-page video portfolio: a hero `<video>` with a strip of three thumbnails b
 ## Files
 
 ```
-index.html       all markup (header, hero video, gallery, footer)
+index.html       page shell (header, hero, info panel, empty gallery, footer)
 css/style.css    all styles; design tokens on :root
-js/main.js       thumbnail switching + phone hamburger menu
+js/main.js       loads videos from Supabase, builds the gallery, hero switching, phone menu
 js/supabase-config.js  Supabase project URL + publishable key (public by design)
 supabase/setup.sql     tables, RLS policies, storage bucket, seed rows (run in the SQL Editor)
 dev-server.py    local server with HTTP Range support (dev only)
 images/          background.jpg, favicon.svg
-posters/         sue-vidN-thumb.png (143x105 thumbnails), sue-vidN-frame.jpg (1200x880 hero posters)
-video/           sue-vid1..3.mp4
+posters/, video/  the original 3 videos: used only as the fallback when Supabase is unreachable
 .vercelignore    keeps dev-only files off the live site
 ```
 
@@ -36,7 +35,7 @@ Serves http://localhost:8000. Gotchas:
 
 ## Design
 
-- The layout was measured from the 1200x800 mockup, so keep desktop pixel-faithful to it. Header and footer are 68px bars of `rgba(255,255,255,0.62)`. The hero is 656px wide with an 8px `#131c55` border. The gallery strip is `#143055`, with 14px gaps and 8px/16px padding. The logo is bold Courier New at 30px, and the nav is Helvetica at 18px.
+- The layout was measured from the 1200x800 mockup, so keep desktop pixel-faithful to it. Header and footer are 68px bars of `rgba(255,255,255,0.62)`. The hero is 656px wide with an 8px `#131c55` border. Below it, the title/description panel (glass, same width) and the gallery strip (`#143055`, also 656px wide, 14px gaps, 8px/16px padding) hold fixed 143x105 thumbnails, about 4 per row, wrapping and centered. The logo is bold Courier New at 30px, and the nav is Helvetica at 18px.
 - Colors live in `:root` (`--navy`, `--navy-strip`, `--ink`, `--sky`, `--glass`). Reuse them rather than adding new hex values.
 - **Breakpoint at 600px.** At that width and below, the nav collapses behind a hamburger dropdown, and the thumbnails stack in one column at their native 143px so they stay sharp.
 - The background image sits on a fixed `body::before` layer, because iOS Safari ignores `background-attachment: fixed`.
@@ -44,19 +43,22 @@ Serves http://localhost:8000. Gotchas:
 
 ## Player behavior (js/main.js)
 
-- Each thumbnail is a `<button class="thumb">` with these attributes: `data-video`, `data-poster`, `data-title` and `aria-label`.
+- On load, `fetchVideos()` calls the Supabase REST API directly with `fetch` and the publishable key (no supabase-js on the public page). It gets published rows ordered by `position`, with a 4-second timeout. Media URLs come from `mediaUrl(path)`.
+- If the fetch fails, it falls back to `BUNDLED_VIDEOS` (the repo's 3 files) and logs a console warning. An empty list shows "No videos yet" instead.
+- The gallery and info panel are built from that list with `createElement`/`textContent`. Never use `innerHTML` with database text.
 - **Call `hero.play()` synchronously inside the click handler.** Safari only allows playback started directly by a user action.
 - Clicking the active thumbnail restarts its video instead of reloading it.
 - The playing thumbnail gets `aria-current="true"`, which also draws its light-blue outline. A visually hidden `#now-playing` live region announces the change to screen readers.
-- The hero has `autoplay muted playsinline`. When reduced motion is requested, it doesn't autoplay. The videos have no audio tracks.
+- The hero is `muted playsinline`, and the first video starts with a muted `play()` once the list loads. When reduced motion is requested, it doesn't autoplay. The videos have no audio tracks.
 - Poster frames are preloaded after `load`, so switching never shows a blank player.
 
 ## Adding a video
 
+No code change is needed: videos live in Supabase. Until the admin upload page exists (M10), add one by hand:
+
 1. Encode it with `ffmpeg -movflags +faststart` so the moov atom comes before mdat. This avoids stalls in production.
-2. Add `video/sue-vidN.mp4`, `posters/sue-vidN-thumb.png` (143x105) and `posters/sue-vidN-frame.jpg` (same aspect ratio as the video; the current ones are 1472x1080).
-3. Copy a `<li>` in the gallery and update its `data-*` attributes and `aria-label`.
-4. At desktop width the strip is sized for three thumbnails (489px), so a fourth needs a design decision.
+2. In the dashboard, upload to the `media` bucket: `videos/<name>.mp4`, `thumbs/<name>.png` (143x105) and `posters/<name>.jpg` (same aspect ratio as the video; the current ones are 1472x1080).
+3. Insert a `videos` row with those paths, a title, a description, and the next `position`.
 
 ## Supabase (admin back end, M7+)
 
