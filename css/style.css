@@ -411,28 +411,11 @@ a:focus-visible {
     border-width: 5px;
   }
 
-  /* Phones keep a vertical stack: no scrolling row, arrows or fades */
-  .gallery-strip {
-    width: auto;
-  }
-
-  .gallery {
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px;
-    overflow: visible;
-    scroll-snap-type: none;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-
-  .gallery li:first-child,
-  .gallery li:last-child {
-    margin: 0;
-  }
-
+  /* Phones use the same scrolling row as desktop (2 thumbnails fit at 375px);
+     taller arrows make easier touch targets */
   .gallery-arrow {
-    display: none;
+    width: 32px;
+    height: 60px;
   }
 
   .video-title {
