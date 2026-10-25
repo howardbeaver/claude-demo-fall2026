@@ -12,7 +12,8 @@ index.html       page shell (header, hero, info panel, empty gallery, footer)
 css/style.css    all styles; design tokens on :root
 js/main.js       loads videos from Supabase, builds the gallery, hero switching, phone menu
 js/supabase-config.js  Supabase project URL + publishable key (public by design), mediaUrl()
-admin/           /admin page: index.html, admin.css, admin.js (sign-in + video list), upload.js (Add video)
+admin/           /admin page: index.html, admin.css, admin.js (sign-in), manage.js (video list:
+                 reorder/edit/publish/delete), upload.js (Add video form + file drop zone)
 supabase/setup.sql     tables, RLS policies, storage bucket, seed rows (run in the SQL Editor)
 dev-server.py    local server with HTTP Range support (dev only)
 images/          background.jpg, favicon.svg
@@ -55,7 +56,7 @@ Serves http://localhost:8000. Gotchas:
 
 ## Adding a video
 
-Use **Add video** on `/admin` (admin/upload.js). No code change is needed.
+Use **Add video** on `/admin` (admin/upload.js): choose a file or drag it onto the drop zone. No code change is needed.
 
 - **Checks:** the file must be MP4 and 50 MB or less. A file that isn't faststart (moov after mdat) gets a warning with the `ffmpeg -c copy -movflags +faststart` fix, but isn't blocked. A file the browser can't decode is blocked.
 - **Images:** the thumbnail (286x210 PNG, 2x for Retina) comes from the frame-slider frame, or from the admin's own image, centre-cropped to fit. The poster is always the chosen frame at the video's own aspect ratio (JPEG, ≤1600px wide).
@@ -79,7 +80,14 @@ Project `eweximsjuwzvtrynscdg` (East US) holds the video list, uploaded files an
 - **Flow:** remembered session (localStorage) or `signInWithPassword` → `rpc('is_admin')` → dashboard. A non-admin is signed straight out. There's no sign-up or password-reset link.
 - If the user loses the password, delete the user in Authentication → Users, add a new one, and re-run `supabase/setup.sql`. The admins row cascades on delete, and the script re-adds the only user.
 - The page carries `noindex`, and the public site doesn't link to it. Neither is a security measure; RLS is.
-- **Testing:** Claude can't type the user's password, so the user signs in for signed-in tests. Signing out clears the session, and they'll need to sign in again.
+- **Testing:** Claude can't type the user's password, so the user signs in for signed-in tests. Signing out clears the session, and they'll need to sign in again. A signed-in session persists in the preview browser, so tests there save for real. Only make changes you undo, never delete the user's videos, and stay off the admin while the user is using it.
+
+## Managing videos (admin/manage.js)
+
+- **Reorder:** drag the ⠿ handle, or use the ↑/↓ buttons, which are the keyboard route. Dragging uses pointer events on `window`, not pointer capture, because moving the row in the DOM releases capture. `saveOrder()` rewrites `position = 1..N` only for rows that changed.
+- **Published/Hidden** is a `role="switch"` button. **Edit** changes title and description inline. **Delete** confirms inline, then deletes the row first (the site stops showing it) and then its three storage files.
+- Every update/delete uses `.select('id')` and treats "not exactly 1 row" as a failure. RLS turns a forbidden write into 0 rows, not an error.
+- **Upload drop zone:** a video file dropped on the dashed box goes through the same `change` checks as Choose File. File drops elsewhere on the page are swallowed, so the browser doesn't navigate away.
 
 ## Deploy
 

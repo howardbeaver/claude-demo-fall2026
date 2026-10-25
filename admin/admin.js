@@ -1,10 +1,12 @@
-// MyVideoPlayer admin: sign in, confirm the account is an admin, list videos.
+// MyVideoPlayer admin: sign in, confirm the account is an admin, then hand
+// off to the video list (manage.js) and the Add video form (upload.js).
 // Security comes from the database's row-level security rules, not this page:
 // a non-admin who got past this screen still could not change anything.
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/+esm';
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, mediaUrl } from '../js/supabase-config.js';
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from '../js/supabase-config.js';
 import { initUpload } from './upload.js';
+import { initManage, loadVideos } from './manage.js';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
@@ -18,8 +20,6 @@ const signInButton = document.getElementById('sign-in-button');
 const dashboard = document.getElementById('dashboard');
 const adminEmail = document.getElementById('admin-email');
 const signOutButton = document.getElementById('sign-out');
-const videosStatus = document.getElementById('videos-status');
-const videoList = document.getElementById('video-list');
 
 // Which screen is showing: 'checking', 'sign-in' or 'dashboard'
 function showScreen(name) {
@@ -55,57 +55,6 @@ async function openDashboard(session) {
   adminEmail.textContent = session.user.email;
   showScreen('dashboard');
   loadVideos();
-}
-
-// Video list (as admin, hidden videos are included too)
-
-async function loadVideos() {
-  videosStatus.textContent = 'Loading videos…';
-  videoList.replaceChildren();
-
-  const { data: videos, error } = await supabase
-    .from('videos')
-    .select('id, title, description, thumb_path, position, published')
-    .order('position', { ascending: true });
-
-  if (error) {
-    videosStatus.textContent = 'Could not load the videos. Refresh to try again.';
-    return;
-  }
-
-  videosStatus.textContent = videos.length === 0 ? 'No videos yet.' : '';
-  videoList.replaceChildren(...videos.map(renderVideoRow));
-}
-
-function renderVideoRow(video, index) {
-  const position = document.createElement('span');
-  position.className = 'video-position';
-  position.textContent = String(index + 1);
-
-  const thumb = document.createElement('img');
-  thumb.src = mediaUrl(video.thumb_path);
-  thumb.alt = '';
-  thumb.width = 96;
-  thumb.height = 70;
-
-  const title = document.createElement('h2');
-  title.textContent = video.title;
-
-  const description = document.createElement('p');
-  description.textContent = video.description || 'No description';
-
-  const text = document.createElement('div');
-  text.className = 'video-text';
-  text.append(title, description);
-
-  const badge = document.createElement('span');
-  badge.className = video.published ? 'badge badge-published' : 'badge badge-hidden';
-  badge.textContent = video.published ? 'Published' : 'Hidden';
-
-  const row = document.createElement('li');
-  row.className = 'video-row';
-  row.append(position, thumb, text, badge);
-  return row;
 }
 
 // Sign in / sign out
@@ -149,6 +98,7 @@ signOutButton.addEventListener('click', async () => {
   showSignIn();
 });
 
+initManage(supabase);
 initUpload({ supabase, onUploaded: loadVideos });
 
 // On load: reuse a remembered session if there is one

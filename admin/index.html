@@ -58,8 +58,10 @@
         <form id="upload-form" novalidate>
           <div class="field">
             <label for="video-file">Video file</label>
-            <p class="field-hint" id="video-file-hint">MP4, up to 50 MB.</p>
-            <input id="video-file" type="file" accept="video/mp4,.mp4" aria-describedby="video-file-hint video-file-note">
+            <div class="drop-zone" id="video-drop-zone">
+              <p class="drop-zone-text" id="video-file-hint"><strong>Drag a video file here</strong>, or choose one. MP4, up to 50 MB.</p>
+              <input id="video-file" type="file" accept="video/mp4,.mp4" aria-describedby="video-file-hint video-file-note">
+            </div>
             <p class="field-note" id="video-file-note" hidden></p>
           </div>
 

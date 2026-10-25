@@ -176,6 +176,57 @@ videoInput.addEventListener('change', async () => {
   }
 });
 
+// Dropping a video file on the drop zone works the same as choosing it
+
+const dropZone = document.getElementById('video-drop-zone');
+
+function isFileDrag(event) {
+  return [...(event.dataTransfer?.types || [])].includes('Files');
+}
+
+dropZone.addEventListener('dragover', (event) => {
+  if (!isFileDrag(event) || videoInput.disabled) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'copy';
+  dropZone.classList.add('is-dragover');
+});
+
+dropZone.addEventListener('dragleave', (event) => {
+  // Ignore leaving into a child element of the zone
+  if (!dropZone.contains(event.relatedTarget)) {
+    dropZone.classList.remove('is-dragover');
+  }
+});
+
+dropZone.addEventListener('drop', (event) => {
+  if (!isFileDrag(event)) return;
+  event.preventDefault();
+  dropZone.classList.remove('is-dragover');
+  const file = event.dataTransfer.files[0];
+  if (!file || videoInput.disabled) return;
+
+  // Put the file in the input so the normal "change" checks run on it
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+  videoInput.files = transfer.files;
+  videoInput.dispatchEvent(new Event('change'));
+});
+
+// A file dropped anywhere else would make the browser open it and leave
+// the admin page, so swallow those drops
+window.addEventListener('dragover', (event) => {
+  if (isFileDrag(event) && !dropZone.contains(event.target)) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'none';
+  }
+});
+
+window.addEventListener('drop', (event) => {
+  if (isFileDrag(event) && !dropZone.contains(event.target)) {
+    event.preventDefault();
+  }
+});
+
 frameSlider.addEventListener('input', () => {
   preview.currentTime = Number(frameSlider.value);
   frameTime.textContent = `${Number(frameSlider.value).toFixed(1)} s`;

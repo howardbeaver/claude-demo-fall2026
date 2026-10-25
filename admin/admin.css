@@ -220,6 +220,31 @@
   font-size: 14px;
 }
 
+/* Drag a video file from Finder onto the form */
+.drop-zone {
+  margin-top: 6px;
+  padding: 16px;
+  border: 2px dashed #8a93b8;
+  border-radius: 4px;
+  background: #f7f8fc;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.drop-zone.is-dragover {
+  border-color: var(--navy);
+  background: #e6f5fb;
+}
+
+.drop-zone-text {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #3d4766;
+}
+
+.drop-zone-text strong {
+  color: var(--navy);
+}
+
 .field input:focus-visible,
 .field textarea:focus-visible,
 .checkbox input:focus-visible {
@@ -411,22 +436,159 @@
   white-space: nowrap;
 }
 
-.badge {
+/* Row controls (admin/manage.js) */
+
+.drag-handle {
   flex: none;
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: bold;
+  padding: 6px 2px;
+  font-size: 20px;
+  line-height: 1;
+  color: #8a93b8;
+  cursor: grab;
+  touch-action: none;       /* let touch drags reorder instead of scrolling */
+  user-select: none;
 }
 
-.badge-published {
+.video-row.is-dragging {
+  position: relative;
+  z-index: 1;
+  background: #eef1fb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: grabbing;
+}
+
+.video-row.is-dragging .drag-handle {
+  cursor: grabbing;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 12px;
+}
+
+.status-toggle {
+  padding: 4px 10px;
+  border: 1px solid #b9bcc6;
+  border-radius: 12px;
+  background: #ececec;
+  color: #4a4a4a;
+  font: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.status-toggle.is-published {
+  border-color: #9fd0ab;
   background: #dff3e4;
   color: #1d5c2e;
 }
 
-.badge-hidden {
-  background: #ececec;
-  color: #4a4a4a;
+.icon-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #8a93b8;
+  background: #fff;
+  color: var(--navy);
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.icon-button:hover:not(:disabled) {
+  background: #eef1fb;
+}
+
+.icon-button:disabled,
+.status-toggle:disabled,
+.link-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.row-actions .link-button {
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.link-button.danger {
+  color: #b3261e;
+}
+
+.status-toggle:focus-visible,
+.icon-button:focus-visible,
+.danger-button:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 2px;
+}
+
+.danger-button {
+  padding: 10px 16px;
+  border: 0;
+  background: #b3261e;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.danger-button:hover {
+  background: #8c1d18;
+}
+
+.video-row.is-confirming {
+  background: #fbeceb;
+}
+
+.confirm-note {
+  white-space: normal !important;
+}
+
+.video-row.is-editing {
+  align-items: flex-start;
+}
+
+.edit-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.edit-form label {
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.edit-form input,
+.edit-form textarea {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid #8a93b8;
+  border-radius: 2px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.edit-form input:focus-visible,
+.edit-form textarea:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 1px;
+}
+
+.edit-form .form-error {
+  margin: 0 0 10px;
+}
+
+.dashboard-message.is-error {
+  color: #8c1d18;
 }
 
 @media (max-width: 600px) {
@@ -434,8 +596,22 @@
     padding: 18px 16px;
   }
 
+  .video-row {
+    flex-wrap: wrap;
+  }
+
   .video-row img {
     width: 72px;
     height: 53px;
+  }
+
+  .video-text {
+    flex-basis: calc(100% - 140px);
+  }
+
+  /* Controls drop onto their own line under the title */
+  .row-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
 }
