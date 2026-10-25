@@ -4,6 +4,7 @@
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/+esm';
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, mediaUrl } from '../js/supabase-config.js';
+import { initUpload } from './upload.js';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
@@ -147,6 +148,8 @@ signOutButton.addEventListener('click', async () => {
   await supabase.auth.signOut();
   showSignIn();
 });
+
+initUpload({ supabase, onUploaded: loadVideos });
 
 // On load: reuse a remembered session if there is one
 const { data: { session } } = await supabase.auth.getSession();

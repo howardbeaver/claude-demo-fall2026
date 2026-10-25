@@ -12,7 +12,7 @@ index.html       page shell (header, hero, info panel, empty gallery, footer)
 css/style.css    all styles; design tokens on :root
 js/main.js       loads videos from Supabase, builds the gallery, hero switching, phone menu
 js/supabase-config.js  Supabase project URL + publishable key (public by design), mediaUrl()
-admin/           /admin page: index.html, admin.css, admin.js (sign-in + video list)
+admin/           /admin page: index.html, admin.css, admin.js (sign-in + video list), upload.js (Add video)
 supabase/setup.sql     tables, RLS policies, storage bucket, seed rows (run in the SQL Editor)
 dev-server.py    local server with HTTP Range support (dev only)
 images/          background.jpg, favicon.svg
@@ -55,11 +55,11 @@ Serves http://localhost:8000. Gotchas:
 
 ## Adding a video
 
-No code change is needed: videos live in Supabase. Until the admin upload page exists (M10), add one by hand:
+Use **Add video** on `/admin` (admin/upload.js). No code change is needed.
 
-1. Encode it with `ffmpeg -movflags +faststart` so the moov atom comes before mdat. This avoids stalls in production.
-2. In the dashboard, upload to the `media` bucket: `videos/<name>.mp4`, `thumbs/<name>.png` (143x105) and `posters/<name>.jpg` (same aspect ratio as the video; the current ones are 1472x1080).
-3. Insert a `videos` row with those paths, a title, a description, and the next `position`.
+- **Checks:** the file must be MP4 and 50 MB or less. A file that isn't faststart (moov after mdat) gets a warning with the `ffmpeg -c copy -movflags +faststart` fix, but isn't blocked. A file the browser can't decode is blocked.
+- **Images:** the thumbnail (286x210 PNG, 2x for Retina) comes from the frame-slider frame, or from the admin's own image, centre-cropped to fit. The poster is always the chosen frame at the video's own aspect ratio (JPEG, ≤1600px wide).
+- **Upload:** files go to `videos/<uuid>.mp4`, `thumbs/<uuid>.png` and `posters/<uuid>.jpg` with a one-year `cacheControl`. The new row gets `position = max + 1`. If any step fails, the files already uploaded are removed.
 
 ## Supabase (admin back end, M7+)
 

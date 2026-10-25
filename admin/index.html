@@ -46,6 +46,72 @@
         <p class="signed-in-as">Signed in as <strong id="admin-email"></strong></p>
       </div>
 
+      <div class="dashboard-toolbar">
+        <button class="primary-button" id="add-video-button" type="button" aria-expanded="false" aria-controls="upload-panel">Add video</button>
+        <p class="dashboard-message" id="dashboard-message" role="status"></p>
+      </div>
+
+      <!-- Add a video (admin/upload.js) -->
+      <section class="upload-panel" id="upload-panel" aria-labelledby="upload-heading" hidden>
+        <h2 id="upload-heading">Add a video</h2>
+
+        <form id="upload-form" novalidate>
+          <div class="field">
+            <label for="video-file">Video file</label>
+            <p class="field-hint" id="video-file-hint">MP4, up to 50 MB.</p>
+            <input id="video-file" type="file" accept="video/mp4,.mp4" aria-describedby="video-file-hint video-file-note">
+            <p class="field-note" id="video-file-note" hidden></p>
+          </div>
+
+          <div class="frame-picker" id="frame-picker" hidden>
+            <video class="frame-preview" id="frame-preview" muted playsinline preload="auto"></video>
+
+            <div class="field">
+              <label for="frame-slider">Thumbnail frame <span class="frame-time" id="frame-time">0.0 s</span></label>
+              <input id="frame-slider" type="range" min="0" max="0" step="0.1" value="0">
+            </div>
+
+            <div class="thumb-choice">
+              <figure class="thumb-figure">
+                <img id="thumb-preview" alt="Thumbnail preview" width="143" height="105">
+                <figcaption id="thumb-source">From the video frame</figcaption>
+              </figure>
+
+              <div class="field">
+                <label for="custom-thumb">Or use your own thumbnail image</label>
+                <p class="field-hint" id="custom-thumb-hint">PNG, JPG or WebP. Cropped to fit 143&times;105.</p>
+                <input id="custom-thumb" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="custom-thumb-hint">
+                <button class="link-button" id="clear-custom-thumb" type="button" hidden>Use the video frame instead</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="video-title-input">Title</label>
+            <input id="video-title-input" type="text" maxlength="100" required>
+          </div>
+
+          <div class="field">
+            <label for="video-description-input">Description <span class="optional">(optional)</span></label>
+            <textarea id="video-description-input" rows="3" maxlength="500" aria-describedby="description-count"></textarea>
+            <p class="field-hint" id="description-count">0 / 500</p>
+          </div>
+
+          <label class="checkbox">
+            <input id="video-published" type="checkbox" checked>
+            Published (visible on the site)
+          </label>
+
+          <p class="form-error" id="upload-error" role="alert" hidden></p>
+          <p class="upload-progress" id="upload-progress" role="status"></p>
+
+          <div class="form-buttons">
+            <button class="primary-button" id="upload-button" type="submit">Upload</button>
+            <button class="secondary-button" id="cancel-upload" type="button">Cancel</button>
+          </div>
+        </form>
+      </section>
+
       <p class="admin-status" id="videos-status" role="status"></p>
       <ol class="video-list" id="video-list"></ol>
     </section>
