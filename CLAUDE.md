@@ -83,7 +83,7 @@ Project `eweximsjuwzvtrynscdg` (East US) holds the video list, uploaded files an
 
 ## Deploy
 
-Vercel serves the repo root as a static site (Framework Preset: Other, no build command, no `vercel.json`). Asset paths must stay relative and match the filenames' case exactly, because Vercel's filesystem is case-sensitive and macOS isn't.
+Vercel serves the repo root as a static site (Framework Preset: Other, no build command). `vercel.json` only redirects `/admin` → `/admin/`, because Vercel returns 404 for the slashless directory URL. Asset paths must stay relative and match the filenames' case exactly, because Vercel's filesystem is case-sensitive and macOS isn't.
 
 ## Working agreements
 
