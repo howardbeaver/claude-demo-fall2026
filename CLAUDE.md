@@ -11,6 +11,8 @@ Single-page video portfolio: a hero `<video>` with a strip of three thumbnails b
 index.html       all markup (header, hero video, gallery, footer)
 css/style.css    all styles; design tokens on :root
 js/main.js       thumbnail switching + phone hamburger menu
+js/supabase-config.js  Supabase project URL + publishable key (public by design)
+supabase/setup.sql     tables, RLS policies, storage bucket, seed rows (run in the SQL Editor)
 dev-server.py    local server with HTTP Range support (dev only)
 images/          background.jpg, favicon.svg
 posters/         sue-vidN-thumb.png (143x105 thumbnails), sue-vidN-frame.jpg (1200x880 hero posters)
@@ -55,6 +57,17 @@ Serves http://localhost:8000. Gotchas:
 2. Add `video/sue-vidN.mp4`, `posters/sue-vidN-thumb.png` (143x105) and `posters/sue-vidN-frame.jpg` (same aspect ratio as the video; the current ones are 1472x1080).
 3. Copy a `<li>` in the gallery and update its `data-*` attributes and `aria-label`.
 4. At desktop width the strip is sized for three thumbnails (489px), so a fourth needs a design decision.
+
+## Supabase (admin back end, M7+)
+
+Project `eweximsjuwzvtrynscdg` (East US) holds the video list, uploaded files and the admin login.
+
+- **`videos` table:** title, description, `video_path`/`thumb_path`/`poster_path` (paths inside the `media` bucket), `position` (gallery order, lowest first), `published`.
+- **`media` storage bucket:** public, so files are readable by URL with Range support. Folders are `videos/`, `thumbs/` and `posters/`. The limit is 50 MB per file, and only mp4/png/jpeg/webp are allowed.
+- **Security comes from RLS, not from hiding pages.** Anyone can read published rows. Writes and uploads require `public.is_admin()`, which is true only for users in `public.admins`. Public sign-up is off, and the user is the only account.
+- `supabase/setup.sql` is idempotent. Re-run it in the SQL Editor after changing it, and keep it as the source of truth for the schema.
+- Use only the publishable key in code. Never ask for, or commit, the secret / `service_role` key or the database password. Claude doesn't create accounts or enter passwords. The user does those in the dashboard.
+- Plan: M8 public page reads from the DB · M9 `/admin` sign-in · M10 uploads · M11 reorder/edit/delete · M12 security review + deploy.
 
 ## Deploy
 

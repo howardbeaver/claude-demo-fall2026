@@ -3,6 +3,7 @@ dev-server.py
 .claude/
 README.md
 CLAUDE.md
+supabase/
 
 # Local reference files (not in git, but excluded in case of a CLI deploy)
 *.rtf
