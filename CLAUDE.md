@@ -37,7 +37,12 @@ Serves http://localhost:8000. Gotchas:
 
 ## Design
 
-- The layout was measured from the 1200x800 mockup, so keep desktop pixel-faithful to it. Header and footer are 68px bars of `rgba(255,255,255,0.62)`. The hero is 656px wide with an 8px `#131c55` border. Below it, the title/description panel (glass, same width) and the gallery strip (`#143055`, also 656px wide, 14px gaps, 8px/16px padding) hold fixed 143x105 thumbnails, about 4 per row, wrapping and centered. The logo is bold Courier New at 30px, and the nav is Helvetica at 18px.
+- The layout was measured from the 1200x800 mockup, so keep desktop pixel-faithful to it. Header and footer are 68px bars of `rgba(255,255,255,0.62)`. The hero is 656px wide with an 8px `#131c55` border. Below it are the title/description panel (glass, same width) and the gallery strip (`#143055`, also 656px wide).
+
+**Gallery strip:**
+- It's **one horizontally scrolling row** of fixed 143x105 thumbnails with 14px gaps. Exactly 4 fit (614px), leaving a 21px `--edge` at each end where the neighbouring video peeks in and fades out. The fade is a CSS mask, toggled by `.can-scroll-back`/`.can-scroll-forward` on `.gallery-strip`.
+- **‹ ›** arrows overlay the edges and scroll one page of whole thumbnails, with snapping. Each arrow is disabled (invisible) at its end, and both are hidden when the row doesn't overflow. With 4 or fewer videos, auto margins on the first and last `li` centre the row.
+- Phones (≤600px) instead stack the thumbnails in a column, with no arrows or fades. The logo is bold Courier New at 30px, and the nav is Helvetica at 18px.
 - Colors live in `:root` (`--navy`, `--navy-strip`, `--ink`, `--sky`, `--glass`). Reuse them rather than adding new hex values.
 - **Breakpoint at 600px.** At that width and below, the nav collapses behind a hamburger dropdown, and the thumbnails stack in one column at their native 143px so they stay sharp.
 - The background image sits on a fixed `body::before` layer, because iOS Safari ignores `background-attachment: fixed`.

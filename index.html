@@ -38,7 +38,12 @@
 
     <p class="visually-hidden" id="now-playing" aria-live="polite"></p>
 
-    <ul class="gallery" aria-label="Choose a video"></ul>
+    <!-- One scrolling row; the arrows and edge fades appear only when it overflows -->
+    <div class="gallery-strip">
+      <button class="gallery-arrow gallery-prev" type="button" aria-label="Previous videos" aria-controls="gallery" hidden>&lsaquo;</button>
+      <ul class="gallery" id="gallery" aria-label="Choose a video"></ul>
+      <button class="gallery-arrow gallery-next" type="button" aria-label="More videos" aria-controls="gallery" hidden>&rsaquo;</button>
+    </div>
 
     <noscript><p class="video-info">Turn on JavaScript to watch the videos.</p></noscript>
   </main>

@@ -4,7 +4,10 @@
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, mediaUrl } from './supabase-config.js';
 
 const hero = document.getElementById('hero-video');
+const galleryStrip = document.querySelector('.gallery-strip');
 const gallery = document.querySelector('.gallery');
+const prevArrow = document.querySelector('.gallery-prev');
+const nextArrow = document.querySelector('.gallery-next');
 const infoTitle = document.getElementById('video-title');
 const infoDescription = document.getElementById('video-description');
 const nowPlaying = document.getElementById('now-playing');
@@ -70,17 +73,57 @@ function renderGallery(videos) {
     item.append(button);
     return item;
   }));
+  updateScrollState();
 }
 
-function setActive(index) {
+// reveal: slide a partly hidden thumbnail fully into the row (on clicks only,
+// so the page doesn't jump on load)
+function setActive(index, reveal) {
   gallery.querySelectorAll('.thumb').forEach((thumb, i) => {
     if (i === index) {
       thumb.setAttribute('aria-current', 'true');
+      if (reveal) {
+        thumb.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
     } else {
       thumb.removeAttribute('aria-current');
     }
   });
 }
+
+// Gallery scrolling: the arrows page through the row, and each arrow and
+// edge fade only shows on a side that has more videos
+
+function updateScrollState() {
+  const overflowing = gallery.scrollWidth > gallery.clientWidth + 1;
+  const atStart = gallery.scrollLeft <= 1;
+  const atEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 1;
+
+  // Don't strand keyboard focus on an arrow that is about to switch off
+  if (document.activeElement === prevArrow && atStart && !atEnd) nextArrow.focus();
+  if (document.activeElement === nextArrow && atEnd && !atStart) prevArrow.focus();
+
+  prevArrow.hidden = !overflowing;
+  nextArrow.hidden = !overflowing;
+  prevArrow.disabled = atStart;
+  nextArrow.disabled = atEnd;
+  galleryStrip.classList.toggle('can-scroll-back', overflowing && !atStart);
+  galleryStrip.classList.toggle('can-scroll-forward', overflowing && !atEnd);
+}
+
+// Scroll by however many whole thumbnails are visible
+function scrollGallery(direction) {
+  const style = getComputedStyle(gallery);
+  const step = gallery.querySelector('li').offsetWidth + parseFloat(style.columnGap);
+  const visibleWidth = gallery.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+  const perPage = Math.max(1, Math.floor((visibleWidth + parseFloat(style.columnGap)) / step));
+  gallery.scrollBy({ left: direction * perPage * step, behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+
+prevArrow.addEventListener('click', () => scrollGallery(-1));
+nextArrow.addEventListener('click', () => scrollGallery(1));
+gallery.addEventListener('scroll', updateScrollState, { passive: true });
+window.addEventListener('resize', updateScrollState);
 
 function showInfo(video) {
   infoTitle.textContent = video.title;
@@ -109,7 +152,7 @@ function playVideo(videos, index, fromClick) {
     });
   }
 
-  setActive(index);
+  setActive(index, fromClick);
   showInfo(video);
 
   // Tell screen reader users which video is now playing
@@ -136,7 +179,7 @@ async function init() {
   }
 
   if (videos.length === 0) {
-    gallery.hidden = true;
+    galleryStrip.hidden = true;
     showInfo({ title: 'No videos yet', description: 'Check back soon.' });
     return;
   }

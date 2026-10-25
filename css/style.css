@@ -215,22 +215,102 @@ a:focus-visible {
   line-height: 1.45;
 }
 
-/* As wide as the hero: about four thumbnails per row, then wraps */
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 14px;
+/* Gallery: one row as wide as the hero. 4 thumbnails (4x143 + 3x14 = 614px)
+   fill it, leaving 21px at each end where the next/previous video peeks in
+   and fades into the navy. Arrows sit over those ends. */
+.gallery-strip {
+  --edge: 21px;
+  --fade: 32px;
+  position: relative;
   width: 656px;
   max-width: 100%;
-  margin: 0;
-  padding: 8px 16px;
-  list-style: none;
   background: var(--navy-strip);
+}
+
+.gallery {
+  --fade-start: 0px;
+  --fade-end: 0px;
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  padding: 8px var(--edge);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--edge);
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent 100%);
+}
+
+.gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery-strip.can-scroll-back .gallery {
+  --fade-start: var(--fade);
+}
+
+.gallery-strip.can-scroll-forward .gallery {
+  --fade-end: var(--fade);
 }
 
 .gallery li {
   flex: none;
+  scroll-snap-align: start;
+}
+
+/* Centre the row when it doesn't overflow (auto margins collapse to 0 when it does) */
+.gallery li:first-child {
+  margin-left: auto;
+}
+
+.gallery li:last-child {
+  margin-right: auto;
+}
+
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 28px;
+  height: 52px;
+  padding: 0 0 4px;
+  border: 0;
+  background: rgba(19, 28, 85, 0.85);
+  color: #fff;
+  font: inherit;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: opacity 0.2s;
+}
+
+.gallery-prev {
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.gallery-next {
+  right: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.gallery-arrow:hover {
+  background: var(--navy);
+}
+
+.gallery-arrow:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -3px;
+}
+
+/* At an end: the arrow fades out and stops taking clicks */
+.gallery-arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .thumb {
@@ -331,11 +411,28 @@ a:focus-visible {
     border-width: 5px;
   }
 
+  /* Phones keep a vertical stack: no scrolling row, arrows or fades */
+  .gallery-strip {
+    width: auto;
+  }
+
   .gallery {
     flex-direction: column;
     gap: 12px;
-    width: auto;
     padding: 12px;
+    overflow: visible;
+    scroll-snap-type: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .gallery li:first-child,
+  .gallery li:last-child {
+    margin: 0;
+  }
+
+  .gallery-arrow {
+    display: none;
   }
 
   .video-title {
@@ -345,6 +442,7 @@ a:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .thumb img,
+  .gallery-arrow,
   .menu-icon,
   .menu-icon::before,
   .menu-icon::after {
