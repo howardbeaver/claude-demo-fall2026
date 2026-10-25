@@ -187,7 +187,7 @@ a:focus-visible {
   height: auto;
   aspect-ratio: 1472 / 1080;
   border: 8px solid var(--navy);
-  background: #fff;
+  background: var(--navy);   /* letterbox bars for videos that aren't 1472:1080 */
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
 }
 
