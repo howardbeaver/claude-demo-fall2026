@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a class="skip-link" href="#hero-video">Skip to video player</a>
+
   <header class="site-header">
     <a class="logo" href="#">MyVideoPlayer</a>
     <nav class="site-nav" aria-label="Main">
@@ -17,25 +19,30 @@
   </header>
 
   <main class="player">
+    <h1 class="visually-hidden">Video portfolio</h1>
+
     <video class="hero-video" id="hero-video"
+           aria-label="Video player"
            src="video/sue-vid1.mp4"
            poster="posters/sue-vid1-frame.jpg"
            width="1472" height="1080"
            controls autoplay muted playsinline preload="auto"></video>
 
-    <ul class="gallery" aria-label="Videos">
+    <p class="visually-hidden" id="now-playing" aria-live="polite"></p>
+
+    <ul class="gallery" aria-label="Choose a video">
       <li>
-        <button class="thumb" type="button" data-video="video/sue-vid1.mp4" data-poster="posters/sue-vid1-frame.jpg" aria-label="Play video 1">
+        <button class="thumb" type="button" data-video="video/sue-vid1.mp4" data-poster="posters/sue-vid1-frame.jpg" data-title="Video 1" aria-label="Play video 1">
           <img src="posters/sue-vid1-thumb.png" alt="" width="143" height="105">
         </button>
       </li>
       <li>
-        <button class="thumb" type="button" data-video="video/sue-vid2.mp4" data-poster="posters/sue-vid2-frame.jpg" aria-label="Play video 2">
+        <button class="thumb" type="button" data-video="video/sue-vid2.mp4" data-poster="posters/sue-vid2-frame.jpg" data-title="Video 2" aria-label="Play video 2">
           <img src="posters/sue-vid2-thumb.png" alt="" width="143" height="105">
         </button>
       </li>
       <li>
-        <button class="thumb" type="button" data-video="video/sue-vid3.mp4" data-poster="posters/sue-vid3-frame.jpg" aria-label="Play video 3">
+        <button class="thumb" type="button" data-video="video/sue-vid3.mp4" data-poster="posters/sue-vid3-frame.jpg" data-title="Video 3" aria-label="Play video 3">
           <img src="posters/sue-vid3-thumb.png" alt="" width="143" height="105">
         </button>
       </li>
