@@ -26,4 +26,16 @@ Use `dev-server.py` rather than `python3 -m http.server`: the built-in server ig
 
 ## Deploy
 
-Hosted on Vercel as a static site (M6).
+Hosted on Vercel as a static site, deployed from the GitHub repo
+[howardbeaver/claude-demo-fall2026](https://github.com/howardbeaver/claude-demo-fall2026).
+There is no build step and no `vercel.json`.
+
+First-time setup:
+
+1. On vercel.com choose **Add New… → Project**, then import `claude-demo-fall2026` from GitHub.
+2. Set **Framework Preset** to **Other**. Leave Build Command and Output Directory empty.
+3. Click **Deploy**.
+
+After that, every push to `main` redeploys the live site, and pushes to other branches get their own preview URL.
+
+`.vercelignore` keeps dev-only files (`dev-server.py`, `.claude/`, this README) off the live site. Vercel serves video with Range support, so Safari plays it without the dev server.
