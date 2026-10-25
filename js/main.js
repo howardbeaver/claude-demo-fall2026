@@ -48,6 +48,14 @@ thumbs.forEach((thumb) => {
 
 setActive(thumbs[0], false);
 
+// Warm the cache with each video's poster frame once the page has loaded,
+// so switching shows the new frame instantly instead of a blank player
+window.addEventListener('load', () => {
+  thumbs.forEach((thumb) => {
+    new Image().src = thumb.dataset.poster;
+  });
+});
+
 // Phone-width hamburger menu
 
 const menuToggle = document.querySelector('.menu-toggle');

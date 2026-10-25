@@ -22,7 +22,17 @@ body {
   flex-direction: column;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--ink);
-  background: #6b8aa3 url("../images/background.jpg") center / cover fixed no-repeat;
+  background: #6b8aa3;
+}
+
+/* Fixed background on its own layer: iOS Safari ignores
+   background-attachment: fixed and would stretch the image down the page */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: url("../images/background.jpg") center / cover no-repeat;
 }
 
 /* Hidden visually but still read by screen readers */
