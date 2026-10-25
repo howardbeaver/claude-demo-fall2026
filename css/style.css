@@ -97,6 +97,17 @@ body {
   display: block;
   width: 143px;
   height: 105px;
+  transition: opacity 0.2s;
+}
+
+.thumb:hover img {
+  opacity: 0.85;
+}
+
+/* Currently playing video */
+.thumb[aria-pressed="true"] {
+  outline: 3px solid #9fd8ea;
+  outline-offset: 2px;
 }
 
 /* Footer */
