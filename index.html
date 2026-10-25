@@ -8,15 +8,42 @@
 </head>
 <body>
   <header class="site-header">
-    <!-- M2: logo + nav -->
+    <a class="logo" href="#">MyVideoPlayer</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#">About</a>
+      <a href="#">Events</a>
+      <a href="#">Contact</a>
+    </nav>
   </header>
 
   <main class="player">
-    <!-- M2: hero video + thumbnail gallery -->
+    <video class="hero-video" id="hero-video"
+           src="video/sue-vid1.mp4"
+           poster="posters/sue-vid1-frame.jpg"
+           width="1472" height="1080"
+           controls autoplay muted playsinline preload="auto"></video>
+
+    <ul class="gallery" aria-label="Videos">
+      <li>
+        <button class="thumb" type="button" data-video="video/sue-vid1.mp4" data-poster="posters/sue-vid1-frame.jpg" aria-label="Play video 1">
+          <img src="posters/sue-vid1-thumb.png" alt="" width="143" height="105">
+        </button>
+      </li>
+      <li>
+        <button class="thumb" type="button" data-video="video/sue-vid2.mp4" data-poster="posters/sue-vid2-frame.jpg" aria-label="Play video 2">
+          <img src="posters/sue-vid2-thumb.png" alt="" width="143" height="105">
+        </button>
+      </li>
+      <li>
+        <button class="thumb" type="button" data-video="video/sue-vid3.mp4" data-poster="posters/sue-vid3-frame.jpg" aria-label="Play video 3">
+          <img src="posters/sue-vid3-thumb.png" alt="" width="143" height="105">
+        </button>
+      </li>
+    </ul>
   </main>
 
   <footer class="site-footer">
-    <!-- M2: contact + social links -->
+    <p>My Contact Information &ndash; My Social Media Links</p>
   </footer>
 
   <script src="js/main.js"></script>
